@@ -1,27 +1,42 @@
 version: '3.8'
 
 services:
-  app:
-    build: .
-    depends_on:
-      - db
-    environment:
-      - DB_HOST=db
-      - DB_USER=root
-      - DB_PASSWORD=your_password
-      - DB_NAME=collector_db
+  tailscale:
+    image: tailscale/tailscale:latest
+    container_name: tailscale
+    hostname: docker-tailscale
     volumes:
-      - ./logs:/var/log/data_collector
+      - ./tailscale:/var/lib/tailscale
+      - /dev/net/tun:/dev/net/tun
+    network_mode: host
+    privileged: true
+    environment:
+      - TS_AUTH_KEY=tskey-auth-k1cRYZ45sd11CNTRL-3TdnALYzmc5eNijPLLkAc5CQgTyGwDGM
+      - TS_ROUTES=10.0.0.0/24
+    restart: unless-stopped
+
 
   db:
     image: mysql:8.0
+    container_name: mysql_db
+    restart: always
     environment:
-      - MYSQL_ROOT_PASSWORD=your_password
-      - MYSQL_DATABASE=collector_db
-    volumes:
-      - mysql_data:/var/lib/mysql
+      MYSQL_ROOT_PASSWORD: Mongol@12345
+      MYSQL_DATABASE: nodejs_prisma
+      MYSQL_USER: erdene
+      MYSQL_PASSWORD: Pa55w0rd@123
+      MYSQL_ALLOW_EMPTY_PASSWORD: no
+      MYSQL_RANDOM_ROOT_PASSWORD: no
     ports:
       - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - app_network
 
 volumes:
   mysql_data:
+
+networks:
+  app_network:
+    driver: bridge

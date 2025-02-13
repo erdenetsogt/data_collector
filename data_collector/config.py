@@ -4,9 +4,9 @@ import os
 # Өгөгдлийн сангийн тохиргоо
 DB_CONFIG = {
     'host': 'localhost',
-    'user': 'your_username',
-    'password': 'your_password',
-    'database': 'your_database'
+    'user': 'erdene',
+    'password': 'Pa55w0rd@123',
+    'database': 'nodejs_prisma'
 }
 
 # Log файлын зам
